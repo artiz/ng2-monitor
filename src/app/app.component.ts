@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
   <p>Hello Angular Universal App</p>
   
   <router-outlet></router-outlet>
+  <footer>Angular Unuversal App</footer>
   `
 })
 export class AppComponent {
