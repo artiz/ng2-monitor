@@ -5,9 +5,11 @@ import 'angular2-universal-polyfills';
 
 import * as path from 'path';
 import * as express from 'express';
+import * as ws from 'websocket';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-
+import { SystemService } from './backend/services/system';
+ 
 // Angular 2
 import { enableProdMode } from '@angular/core';
 // Angular 2 Universal
@@ -70,7 +72,34 @@ app.get('*', function(req, res) {
   res.status(404).send(json);
 });
 
+SystemService.start();
+
 // Server
 let server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on: http://localhost:${server.address().port}`);
+});
+
+// Web socket
+const wsServer = new ws.server({ 
+  httpServer: server,
+  autoAcceptConnections: true
+});
+
+wsServer.on('request', function(request) {
+    var connection = request.accept('echo-protocol', request.origin);
+    console.log((new Date()) + ' Connection accepted.');
+
+    connection.on('message', function(message) {
+      if (message.type === 'utf8') {
+        console.log('Received Message: ' + message.utf8Data);
+        connection.sendUTF(message.utf8Data);
+      } else if (message.type === 'binary') {
+        console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+        connection.sendBytes(message.binaryData);
+      }
+    });
+  
+    connection.on('close', function(reasonCode, description) {
+      console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+    });
 });

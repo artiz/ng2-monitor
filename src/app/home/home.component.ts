@@ -1,12 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { ApiService } from '../services/api';
-
-
-class CPU {
-  model: string;
-  speed: string;
-  times: any;
-}
+import { HistoryRecord } from '../../shared/entities/history-record';
 
 @Component({
   selector: 'home',
@@ -14,7 +8,7 @@ class CPU {
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isBrowser: boolean;
-  cpus: Array<CPU> = new Array<CPU>();
+  history: Array<HistoryRecord> = [];
   loadTimer: number;
   errorMessage: string;
 
@@ -24,9 +18,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('home ngOnInit')
-    this.loadCpus();
+    this.loadData();
   
+    if(this.isBrowser) {
+      // TODO: open websocket
+      // https://github.com/theturtle32/WebSocket-Node
+    }
+        
   }
   
   ngOnDestroy() {
@@ -34,14 +32,22 @@ export class HomeComponent implements OnInit, OnDestroy {
       clearTimeout(this.loadTimer);
   }
 
-  loadCpus() {
-    this.api.get('/cpus').toPromise()
+  loadData() {
+    this.api.get('/history').toPromise()
       .then(data => {
-        this.cpus = data as Array<CPU>;
+        this.history = data as Array<HistoryRecord>;
         if(this.isBrowser)
-          this.loadTimer = setTimeout(_ => this.loadCpus(), 100);
+          this.loadTimer = setTimeout(_ => this.loadData(), 300);
       })  
       .catch(e => this.errorMessage = e.message || e.toString())
 
   }  
+
+  get columnWidth(): string {
+    return (99 / (this.history.length || 1)).toFixed(3) + '%';
+  }
+
+  toPercentage(value: number) {
+    return value * 100 + '%';
+  }
 }

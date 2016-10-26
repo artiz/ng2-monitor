@@ -15,6 +15,7 @@
       "compression",
       "cookie-parser",
       "express",
+      "websocket",
       "express-serve-static-core",
       "mime",
       "node",
