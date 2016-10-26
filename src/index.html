@@ -5,12 +5,17 @@
   <meta charset="UTF-8">
   <meta name="description" content="Angular 2 Universal">
   <meta name="keywords" content="Angular 2,Universal">
-  <meta name="author" content="PatrickJS">
-
+ 
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
+  <!-- IE required polyfills, in this exact order -->
+  <!--[if IE]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.33.3/es6-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.20/system-polyfills.js"></script>
+    <script src="https://npmcdn.com/angular2/es6/dev/src/testing/shims_for_IE.js"></script>
+  <![endif]-->
   <base href="/">
-
+  <link href="/assets/css/bootstrap.css" type="text/css" rel="stylesheet">
+  <link href="/assets/css/app.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 

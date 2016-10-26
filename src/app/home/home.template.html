@@ -1,0 +1,27 @@
+
+<h1>Dashboard</h1>
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+{{ errorMessage }}
+</div>
+
+<div class="row">
+  <h2 class="text-success col-md-12">CPU(s)</h2>
+  <div *ngFor="let cpu of cpus; let ndx=index" class="col-md-3">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <span class="label label-primary">{{ ndx + 1 }}</span>
+          <span class="label label-warning pull-right">{{ cpu.speed }}&nbsp;MHz</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p>{{ cpu.model }}</p>
+
+        <p>user: {{ cpu.times.user }}</p>
+        <p>sys: {{ cpu.times.sys }}</p>
+        <p>idle: {{ cpu.times.idle }}</p>
+      </div>
+    </div>
+  </div>  
+</div>

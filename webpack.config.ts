@@ -1,17 +1,22 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var commonConfig = {
+
+const commonConfig = {
   resolve: {
-    extensions: ['.ts', '.js', '.json']
+    extensions: ['.ts', '.js', '.json', '.css', '.less'],
+    // An array of directory names to be resolved to the current directory
+    modules: [root('./src'), 'node_modules', 'bower_components']
   },
   module: {
     loaders: [
       // TypeScript
       { test: /\.ts$/, loaders: ['awesome-typescript-loader', 'angular2-template-loader'] },
-      { test: /\.html$/, loader: 'raw-loader' },
-      { test: /\.css$/, loader: 'raw-loader' },
-      { test: /\.json$/, loader: 'json-loader' }
+      { test: /\.html$/, loader: 'raw' },
+      { test: /\.css$/, loaders: ['style', 'css'] },
+      { test: /\.json$/, loader: 'json' },
+      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url?limit=100000' }
     ],
   },
   plugins: [
@@ -44,6 +49,16 @@ var clientConfig = {
   output: {
     path: root('dist/client')
   },
+
+  plugins: [
+    new CopyWebpackPlugin([{
+      from: root('src/assets'),
+      to: 'assets'
+    }, {
+      from: root('node_modules/bootstrap/dist/css/bootstrap.css'),
+      to: 'assets/css'
+    }])
+  ],
   node: {
     global: true,
     __dirname: true,
@@ -67,26 +82,6 @@ var serverConfig = {
     ],
   },
   externals: includeClientPackages([
-    // include these client packages so we can transform their source with webpack loaders
-    '@angular2-material/button',
-    '@angular2-material/button',
-    '@angular2-material/card',
-    '@angular2-material/checkbox',
-    '@angular2-material/core',
-    '@angular2-material/grid',
-    '@angular2-material/icon',
-    '@angular2-material/input',
-    '@angular2-material/list',
-    '@angular2-material/menu',
-    '@angular2-material/progress',
-    '@angular2-material/progress',
-    '@angular2-material/radio',
-    '@angular2-material/sidenav',
-    '@angular2-material/slider',
-    '@angular2-material/slide',
-    '@angular2-material/tabs',
-    '@angular2-material/toolbar',
-    '@angular2-material/tooltip'
   ]),
   node: {
     global: true,

@@ -13,7 +13,7 @@ import { HomeModule } from './home/home.module';
 import { AboutModule } from './about/about.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { Cache } from './universal-cache';
+import { Cache } from './services/universal-cache';
 
 @NgModule({
   bootstrap: [ AppComponent ],
@@ -37,10 +37,12 @@ export class MainModule {
   constructor(public cache: Cache) {
 
   }
+  
   // we need to use the arrow function here to bind the context as this is a gotcha in Universal for now until it's fixed
   universalDoDehydrate = (universalCache) => {
     universalCache['Cache'] = JSON.stringify(this.cache.dehydrate());
   }
+
   universalAfterDehydrate = () => {
     this.cache.clear();
   }

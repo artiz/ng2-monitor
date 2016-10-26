@@ -6,7 +6,7 @@ import { HomeModule } from './home/home.module';
 import { AboutModule } from './about/about.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { Cache } from './universal-cache';
+import { Cache } from './services/universal-cache';
 
 @NgModule({
   bootstrap: [ AppComponent ],

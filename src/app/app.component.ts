@@ -3,14 +3,16 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app',
   template: `
-  <div>
-    <a routerLink="/home">Home</a>
-    <a routerLink="/about">About</a>
+    <div class="container">
+    <div>
+      <a class="btn btn-default" routerLink="/home">Home</a>
+      <a class="btn btn-default" routerLink="/about">About</a>
+    </div>
+
+    <div class="well well-small">Hello Angular Universal App</div>
+    <router-outlet></router-outlet>
+    <footer>Angular Unuversal App</footer>
   </div>
-  <p>Hello Angular Universal App</p>
-  
-  <router-outlet></router-outlet>
-  <footer>Angular Unuversal App</footer>
   `
 })
 export class AppComponent {

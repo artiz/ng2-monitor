@@ -54,3 +54,10 @@ interface WebpackRequire {
 interface NodeRequire extends WebpackRequire {}
 interface NodeModule extends WebpackModule {}
 interface Global extends GlobalEnvironment  {}
+
+
+declare function setTimeout(handler: any, timeout?: any, ...args: any[]): number;
+declare function clearTimeout(id: number);
+
+
+

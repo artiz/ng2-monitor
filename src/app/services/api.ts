@@ -4,24 +4,36 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+
 
 import { Cache  } from './universal-cache';
+
+const ApiPrefix = '/api';
 
 @Injectable()
 export class ApiService {
 
-  constructor(public _http: Http, public _cache: Cache) {
+  constructor(public http: Http, public _cache: Cache) {
 
   }
-  // whatever domain/feature method name
-  getModel(url) {
-    // you want to return the cache if there is a response in it. This would cache the first response so if your API isn't idempotent you probably want to remove the item from the cache after you use it. LRU of 1
+
+  get(url) {
+    if(!url.startsWith(ApiPrefix))
+      url = ApiPrefix + url;
+
+
     let key = url;
     if (this._cache.has(key)) {
-      return Observable.of(this._cache.get(key));
+      //let res = Observable.of(this._cache.get(key));
+      //this._cache.set(key, undefined);
+      //return res;
     }
+
     // you probably shouldn't .share() and you should write the correct logic
-    return this._http.get(url)
+    return this.http.get(url)
       .map(res => res.json())
       .do(json => {
         this._cache.set(key, json);
