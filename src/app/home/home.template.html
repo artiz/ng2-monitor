@@ -14,10 +14,7 @@
         </h3>
       </div>
       <div class="panel-body clearfix">
-        <div *ngFor="let record of history; let ndx=index" style="width: 1%" 
-            class="progress progress-vertical">
-            <div class="progress-bar" [style.height]="toPercentage((record.mem_total - record.mem_free)/record.mem_total)"></div>
-        </div>
+        <line-chart height="200px" [series]="memorySeries"></line-chart>
       </div>
     </div>
   </div>
@@ -31,15 +28,7 @@
         </h3>
       </div>
       <div class="panel-body clearfix">
-        <div *ngFor="let record of history; let ndx=index" style="width: 1%"
-            class="progress progress-vertical">
-              <div class="progress-bar progress-bar-danger" [style.height]="toPercentage(record.cpu_sys / 100 )"></div>
-              <div class="progress-bar progress-bar-success" [style.height]="toPercentage(record.cpu_user / 100)"></div>
-              <div class="progress-bar progress-bar-info" [style.height]="toPercentage(record.cpu_irq / 100)"></div>
-              <!--
-              <div class="progress-bar progress-bar-warning" [style.height]="toPercentage(record.cpu_idle / 100)"></div>
-              -->
-        </div>
+        <line-chart height="200px" [series]="cpuSeries"></line-chart>
       </div>
     </div>
   </div>  

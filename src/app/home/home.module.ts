@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChartModule } from '../components/chart';
 
 import { ApiService } from '../services/api';
 
@@ -9,6 +10,7 @@ import { HomeRoutingModule } from './home-routing.module';
 @NgModule({
   imports: [
     CommonModule,
+    ChartModule,
     HomeRoutingModule
   ],
   providers: [
