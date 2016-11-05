@@ -4,12 +4,13 @@ import { ChartModule } from '../components/chart';
 
 import { ApiService } from '../services/api';
 
+import { SharedModule } from '../shared/shared.module';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
   imports: [
-    CommonModule,
+    SharedModule,
     ChartModule,
     HomeRoutingModule
   ],
