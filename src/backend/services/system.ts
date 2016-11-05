@@ -1,8 +1,8 @@
 import * as os from 'os';
 import { HistoryRecord } from '../../shared/entities/history-record';
 
-const DATA_LOAD_INTERVAL = 500;
-const HISTORY_POINTS_COUNT = 100;
+const DATA_LOAD_INTERVAL = 500; // ms
+const HISTORY_POINTS_COUNT = 600;
 
 class ServiceImpl {
   history: Array<HistoryRecord> = [];
@@ -28,7 +28,7 @@ class ServiceImpl {
     let rec: HistoryRecord = {
       mem_free: os.freemem(),
       mem_total: os.totalmem(),
-      ts: Date.now()
+      ts: 0
     };
 
     let cpus = os.cpus();
@@ -49,12 +49,16 @@ class ServiceImpl {
     }
 
     this.prevCpus = cpus;
-        
+    let prevPoint = this.history[this.history.length - 1]; 
+    rec.ts = Date.now();
     this.history.push(rec);
     if(this.history.length > HISTORY_POINTS_COUNT)
       this.history.shift();
 
-    this.timer = setTimeout(_ => this.loadData(), DATA_LOAD_INTERVAL);
+    let timeout = prevPoint 
+      ? Math.min(DATA_LOAD_INTERVAL, 2 * DATA_LOAD_INTERVAL - rec.ts + prevPoint.ts) 
+      : DATA_LOAD_INTERVAL;
+    this.timer = setTimeout(_ => this.loadData(), timeout);
   }
 }
 

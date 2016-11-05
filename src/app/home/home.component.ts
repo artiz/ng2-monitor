@@ -44,39 +44,26 @@ export class HomeComponent implements OnInit, OnDestroy {
   }  
 
   get memorySeries(): Array<LineSeries> {
-    return [{
+    return [<LineSeries>{
         name: 'Free',
-        points: this.history.map(p => ({ 
-          x: p.ts, 
-          y: p.mem_free / 1024 / 1024
-        }))
-
+        points: this.history.map(p => [p.ts, p.mem_free])
       }];
   } 
 
 
   get cpuSeries(): Array<LineSeries> {
-    return [{
+    return [<LineSeries>{
         name: 'System',
         color: '#f0ad4e',
-        points: this.history.map(p => ({ 
-          x: p.ts, 
-          y: p.cpu_sys
-        }))
-      }, {
+        points: this.history.map(p => [p.ts, p.cpu_sys])
+      }, <LineSeries>{
         name: 'User',
         color: '#5bc0de',
-        points: this.history.map(p => ({ 
-          x: p.ts, 
-          y: p.cpu_user
-        }))
-      }, {
+        points: this.history.map(p => [p.ts, p.cpu_user])
+      }, <LineSeries>{
         name: 'IRQ',
         color: '#5cb85c',
-        points: this.history.map(p => ({ 
-          x: p.ts, 
-          y: p.cpu_irq
-        }))
+        points: this.history.map(p => [p.ts, p.cpu_irq])
       }];
   } 
 

@@ -1,36 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Inject, ElementRef } from '@angular/core';
 
 import { LineSeries, Bounds } from './structures';
 
-/*
+const CHART_HEIGHT = 100;
+const DEFAULT_CHART_RATIO = 2;
 
-      <g fill="none" stroke="none">
-        <path d="M 200 100 L 221.65063509461098 112.5 L 221.65063509461098 137.5 L 200 150 L 178.34936490538905 137.5 L 178.34936490538902 112.50000000000001 Z " stroke="#777">
-        </path>
-        <path d="M 200 75 L 243.30127018922192 100 L 243.30127018922195 150 L 200 175 L 156.69872981077808 150.00000000000003 L 156.69872981077805 100.00000000000003 Z " stroke="#777" >
-        </path>
-        <path d="M 200 50 L 264.9519052838329 87.5 L 264.9519052838329 162.5 L 200 200 L 135.0480947161671 162.50000000000003 L 135.04809471616707 87.50000000000006 Z " stroke="#777" >
-        </path>
-        <path d="M 200 25 L 286.60254037844385 74.99999999999999 L 286.6025403784439 174.99999999999997 L 200 225 L 113.39745962155615 175.00000000000006 L 113.3974596215561 75.00000000000006 Z " stroke="#777" >
-        </path>
-        <path d="M 200 0 L 308.25317547305485 62.499999999999986 L 308.25317547305485 187.49999999999997 L 200.00000000000003 250 L 91.74682452694519 187.50000000000006 L 91.74682452694512 62.500000000000085 Z " stroke="#777" >
-        </path>
-        <g opacity="0.6" >
-          <path d="M 200 50 L 286.60254037844385 74.99999999999999 L 248.71392896287466 153.125 L 200 200 L 129.6354359425144 165.62500000000003 L 151.2860710371253 96.87500000000004 Z " fill="#0D95BC" >
-          </path>
-        </g>
-      </g>
-
-*/
-/*
-<rect 
-        [attr.x]="0" 
-        [attr.y]="0" 
-        [attr.width]="bounds.width" 
-        [attr.height]="bounds.height"
-        fill="url(#bg)" 
-        stroke="#cccccc" />
-*/
+const CHART_PADDING = 0.1;
 
 
 
@@ -56,22 +31,21 @@ import { LineSeries, Bounds } from './structures';
       <rect 
         x="0" 
         y="0" 
-        [attr.width]="bounds.width" 
-        [attr.height]="bounds.height"
+        [attr.width]="chartWidth" 
+        [attr.height]="chartHeight"
         fill="url(#bg)" 
         stroke="#cccccc" />
       
         <polyline *ngFor="let srs of series; let ndx = index"
           fill="none"
-          stroke-width="1"
+          stroke-width="0.5"
           [attr.stroke]="srs.color || '#cc0000'" 
-          [attr.points]="loadPoints(srs)"/>
+          [attr.points]="formatPoints(srs)"/>
       
      </svg>
   `
 })
 export class LineChart implements OnInit, OnDestroy {
-  private _series: Array<LineSeries> = [];
 
   @Input()
   height: string = '100px';
@@ -80,38 +54,41 @@ export class LineChart implements OnInit, OnDestroy {
   width: string = '100%';
 
   @Input()
-  set series (data: Array<LineSeries>) {
-    let bounds = new Bounds();
-    
-    for(let line of data) {
-      for(let p of line.points) {
-        if(bounds.top === null || bounds.top < p.y)
-          bounds.top = p.y;
-        if(bounds.bottom === null || bounds.bottom > p.y)
-          bounds.bottom = p.y;
-        if(bounds.left === null || p.x < bounds.left )
-          bounds.left = p.x;
-        if(bounds.right === null || p.x > bounds.right )
-          bounds.right = p.x;
-      }
-    }
+  timeline: boolean;
 
-    this.bounds = bounds;
-    this._series = data;
-    
+  @Input('min-range')
+  minRange: number | null;
+
+  @Input()
+  xAxis: number | null;
+
+  @Input()
+  yAxis: number | null;
+
+
+  @Input()
+  set series (data: Array<LineSeries>) {
+    this.seriesList = this.loadSeries(data);
   }
 
   get series() {
-    return this._series;
+    return this.seriesList;
   }
 
-  bounds: Bounds;
-
+  
   /** Used to enable animation in browser */  
   isBrowser: boolean;
 
-  constructor (@Inject('isBrowser') isBrowser: boolean) {
+  protected seriesList: Array<LineSeries> = [];
+  
+  protected chartWidth: number;
+  protected chartHeight: number;
+
+  constructor (@Inject('isBrowser') isBrowser: boolean, protected ref: ElementRef) {
     this.isBrowser = isBrowser;
+
+    // TODO: inject Renderer and get real ratio
+
   }
 
   ngOnInit() {
@@ -126,17 +103,77 @@ export class LineChart implements OnInit, OnDestroy {
 
 
   get viewBox() {
-    let b = this.bounds;
-    return `0 0 ${ b.width || 0 } ${ (b.height || 0) }`;
+    return `0 0 ${ this.chartWidth || 0 } ${ (this.chartHeight || 0) }`;
   }
-  
-  loadPoints(srs: LineSeries) {
+ 
+  formatPoints(srs: LineSeries) {
     if(!srs.points)
       return '';
-    let { left, top, bottom, height } = this.bounds;
-    let padding = height * 0.25;    
+    const scale = srs.scale || {
+      horz: 1, vert: 1
+    };
+   
+    let left = srs.bounds.left, 
+      top = srs.bounds.top,
+      bottom = srs.bounds.bottom;
+    const paddingV = this.chartHeight * CHART_PADDING;  
+    const paddingH = this.chartWidth * CHART_PADDING;  
+    
+    const chartAreaScale = 1 - CHART_PADDING * 2;
+    
     return srs.points.map(
-      p => `${ (p.x-left).toFixed(2) } ${ ((height-p.y+bottom)*0.5 + padding).toFixed(2) }`).join(', ');
+      p => `${ ((p[0]  - left) * scale.horz * chartAreaScale + paddingH).toFixed(2) } `
+        + `${ ((this.chartHeight - (p[1] - bottom) * scale.vert) * chartAreaScale + paddingV).toFixed(2) }`).join(',');
   }
+
+  private loadSeries(data: Array<LineSeries>) {
+    let maxBounds = new Bounds();
+ 
+    this.chartHeight = CHART_HEIGHT;
+    this.chartWidth = CHART_HEIGHT * DEFAULT_CHART_RATIO;
+
+    for(let line of data) 
+    {
+      let bounds = new Bounds();
   
+      for(let p of line.points) {
+        if(bounds.top === null || bounds.top < p[1])
+          bounds.top = p[1];
+        if(bounds.bottom === null || bounds.bottom > p[1])
+          bounds.bottom = p[1];
+        if(bounds.left === null || p[0] < bounds.left )
+          bounds.left = p[0];
+        if(bounds.right === null || p[0] > bounds.right )
+          bounds.right = p[0];
+      }
+
+      maxBounds.extend(bounds);
+      let points = [...line.points];
+      if(this.timeline) {
+        if(this.minRange && bounds.width < this.minRange) {
+          let endTime = line.points.length 
+            ? line.points[line.points.length - 1][0]
+            : Date.now();
+          let startTime = line.points.length 
+            ? line.points[0][0]
+            : Date.now();
+
+          let value = line.points.length ? line.points[0][1] : 0;
+
+          bounds.left = endTime - this.minRange;
+          line.points.unshift([startTime - 1, value]);
+          line.points.unshift([bounds.left, value]);
+        }
+      }
+
+      line.scale = {
+        vert: bounds.height ? this.chartHeight / bounds.height : 1,
+        horz: bounds.width ? this.chartWidth / bounds.width : 1
+      };
+
+      line.bounds = bounds;
+    }
+   
+    return data;
+  }
 }

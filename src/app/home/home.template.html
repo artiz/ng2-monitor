@@ -14,7 +14,7 @@
         </h3>
       </div>
       <div class="panel-body clearfix">
-        <line-chart height="200px" [series]="memorySeries"></line-chart>
+        <line-chart height="200px" [series]="memorySeries" timeline="true" min-range="300000"></line-chart>
       </div>
     </div>
   </div>
@@ -28,7 +28,7 @@
         </h3>
       </div>
       <div class="panel-body clearfix">
-        <line-chart height="200px" [series]="cpuSeries"></line-chart>
+        <line-chart height="200px" [series]="cpuSeries" timeline="true" min-range="300000"></line-chart>
       </div>
     </div>
   </div>  

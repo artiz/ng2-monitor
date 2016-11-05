@@ -1,4 +1,4 @@
 
 export * from './chart.module'; 
-export { LineSeries, Point } from './structures';
+export { LineSeries } from './structures';
 
