@@ -43,6 +43,7 @@
     "bootstrap": "^3.3.7",
     "express": "^4.14.0",
     "graceful-fs": "^4.1.9",
+    "js.clone": "0.0.3",
     "methods": "~1.1.2",
     "preboot": "~4.5.2",
     "rxjs": "5.0.0-beta.12",
@@ -79,6 +80,6 @@
     "webpack": "2.1.0-beta.25",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-dev-server": "2.1.0-beta.9",
-    "webpack-merge": "^0.13.0"
+    "webpack-merge": "^0.15.0"
   }
 }

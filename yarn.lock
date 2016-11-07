@@ -1730,6 +1730,10 @@ js-yaml@~3.6.1:
     argparse "^1.0.7"
     esprima "^2.6.0"
 
+js.clone@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/js.clone/-/js.clone-0.0.3.tgz#f378d2bf501fcf648074fd91893f4718236bb79c"
+
 jsbn@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.0.tgz#650987da0dd74f4ebf5a11377a2aa2d273e97dfd"
@@ -1976,6 +1980,10 @@ lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
 
+lodash.isequal@^4.2.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.4.0.tgz#6295768e98e14dc15ce8d362ef6340db82852031"
+
 lodash.isplainobject@^3.0.0, lodash.isplainobject@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-3.2.0.tgz#9a8238ae16b200432960cd7346512d0123fbf4c5"
@@ -2167,6 +2175,10 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, "mkdirp@>=0.5 0", mkdirp@~0.5.0, mkdirp@~0.5.1:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+modern-lru@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/modern-lru/-/modern-lru-1.0.8.tgz#e6806a78e33d5072318a4cdadee126ba85f5db13"
 
 ms@0.7.1:
   version "0.7.1"
@@ -3627,11 +3639,12 @@ webpack-dev-server@2.1.0-beta.9:
     webpack-dev-middleware "^1.4.0"
     yargs "^4.7.1"
 
-webpack-merge@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-0.13.0.tgz#1cacc95cec8a7581b99fa35d3fd9f40a152abafb"
+webpack-merge@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-0.15.0.tgz#f6a930516d5eccba0baabeb30ea96b6a6737c193"
   dependencies:
     lodash.find "^3.2.1"
+    lodash.isequal "^4.2.0"
     lodash.isplainobject "^3.2.0"
     lodash.merge "^3.3.2"
 

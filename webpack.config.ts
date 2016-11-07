@@ -1,6 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+var clone = require('js.clone');
+var webpackMerge = require('webpack-merge');
 
 
 const commonConfig = {
@@ -9,6 +11,12 @@ const commonConfig = {
     // An array of directory names to be resolved to the current directory
     modules: [root('./src'), 'node_modules', 'bower_components']
   },
+  context: __dirname,
+  output: {
+    publicPath: path.resolve(__dirname),
+    filename: 'index.js'
+  },
+ 
   module: {
     loaders: [
       // TypeScript
@@ -29,21 +37,23 @@ const commonConfig = {
       }
     ),
 
-    // To use gzip, you can run 'npm install compression-webpack-plugin --save-dev'
-    // add 'var CompressionPlugin = require("compression-webpack-plugin");' on the top
-    // and comment out below codes
-    //
-    // new CompressionPlugin({
-    //   asset: "[path].gz[query]",
-    //   algorithm: "gzip",
-    //   test: /\.js$|\.css$|\.html$/,
-    //   threshold: 10240,
-    //   minRatio: 0.8
-    // })
-  ]
+  // To use gzip, you can run 'npm install compression-webpack-plugin --save-dev'
+  // add 'var CompressionPlugin = require("compression-webpack-plugin");' on the top
+  // and comment out below codes
+  //
+  // new CompressionPlugin({
+  //   asset: "[path].gz[query]",
+  //   algorithm: "gzip",
+  //   test: /\.js$|\.css$|\.html$/,
+  //   threshold: 10240,
+  //   minRatio: 0.8
+  // })
+];
 
-};
+// Client.
+var clientPlugins = [
 
+];
 
 var clientConfig = {
   target: 'web',
@@ -70,6 +80,11 @@ var clientConfig = {
   }
 };
 
+
+// Server.
+var serverPlugins = [
+
+];
 
 var serverConfig = {
   target: 'node',
@@ -124,26 +139,12 @@ var serverConfig = {
   }
 };
 
-
-
-// Default config
-var defaultConfig = {
-  context: __dirname,
-  output: {
-    publicPath: path.resolve(__dirname),
-    filename: 'index.js'
-  }
-};
-
-
-
-var webpackMerge = require('webpack-merge');
 module.exports = [
   // Client
-  webpackMerge({}, defaultConfig, commonConfig, clientConfig),
+  webpackMerge(clone(commonConfig), clientConfig, { plugins: clientPlugins.concat(commonPlugins) }),
 
   // Server
-  webpackMerge({}, defaultConfig, commonConfig, serverConfig)
+  webpackMerge(clone(commonConfig), serverConfig, { plugins: serverPlugins.concat(commonPlugins) })
 ];
 
 function includeClientPackages(packages) {
