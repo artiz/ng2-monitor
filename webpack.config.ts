@@ -26,16 +26,18 @@ const commonConfig = {
       { test: /\.json$/, loader: 'json' },
       { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url?limit=100000' }
     ],
-  },
-  plugins: [
-    new webpack.ContextReplacementPlugin(
-      // The (\\|\/) piece accounts for path separators in *nix and Windows
-      /angular(\\|\/)core(\\|\/)src(\\|\/)linker/,
-      root('./src'),
-      {
-        // your Angular Async Route paths relative to this root directory
-      }
-    ),
+  }
+};
+
+const commonPlugins = [
+  new webpack.ContextReplacementPlugin(
+    // The (\\|\/) piece accounts for path separators in *nix and Windows
+    /angular(\\|\/)core(\\|\/)src(\\|\/)linker/,
+    root('./src'),
+    {
+      // your Angular Async Route paths relative to this root directory
+    }
+  ),
 
   // To use gzip, you can run 'npm install compression-webpack-plugin --save-dev'
   // add 'var CompressionPlugin = require("compression-webpack-plugin");' on the top

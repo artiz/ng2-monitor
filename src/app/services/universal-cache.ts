@@ -18,7 +18,18 @@ export class CacheService {
    */
   set(key: string | number, value: any): void {
     let _key = this.normalizeKey(key);
-    this._cache.set(_key, value);
+    if(typeof value === 'undefined')
+      this._cache.delete(_key);
+    else
+      this._cache.set(_key, value);
+  }
+
+  /**
+   * cleanup cached value
+   */
+  remove(key: string | number): boolean {
+    let _key = this.normalizeKey(key);
+    return this._cache.delete(_key);
   }
 
   /**
