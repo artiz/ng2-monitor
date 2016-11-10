@@ -1,7 +1,7 @@
 import * as os from 'os';
 import { HistoryRecord } from '../../shared/entities/history-record';
 
-const DATA_LOAD_INTERVAL = 500; // ms
+const DATA_LOAD_INTERVAL = 1000; // ms
 const HISTORY_POINTS_COUNT = 600;
 
 class ServiceImpl {

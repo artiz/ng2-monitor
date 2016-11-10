@@ -13,6 +13,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadTimer: number;
   errorMessage: string;
 
+  _memorySeries: Array<LineSeries>;
+  _cpuSeries: Array<LineSeries>;
 
   constructor (@Inject('isBrowser') isBrowser: boolean, public api: ApiService) {
     this.isBrowser = isBrowser;
@@ -36,35 +38,41 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadData() {
     this.api.get('/history').toPromise()
       .then(data => {
-        this.history = data as Array<HistoryRecord>;
+        this._memorySeries = null;
+        this._cpuSeries = null;
+        this.history = (data as Array<HistoryRecord>) || [];
         if(this.isBrowser)
-          this.loadTimer = setTimeout(_ => this.loadData(), 1000);
+          this.loadTimer = setTimeout(_ => this.loadData(), 2500);
       })  
       .catch(e => this.errorMessage = e.message || e.toString())
   }  
 
   get memorySeries(): Array<LineSeries> {
-    return [<LineSeries>{
-        name: 'Free',
-        points: this.history.map(p => [p.ts, p.mem_free])
-      }];
+    return this._memorySeries || (this._memorySeries = [<LineSeries>{
+        name: 'Occupied',
+        points: this.history.map(p => [p.ts, p.mem_total - p.mem_free])
+      }, <LineSeries>{
+        name: 'Total',
+        color: '#0033cc',
+        width: 2,
+        points: this.history.map(p => [p.ts, p.mem_total])
+      }]);
   } 
 
 
   get cpuSeries(): Array<LineSeries> {
-    return [<LineSeries>{
+    return this._cpuSeries || (this._cpuSeries = [
+      <LineSeries>{
         name: 'System',
-        color: '#f0ad4e',
         points: this.history.map(p => [p.ts, p.cpu_sys])
       }, <LineSeries>{
         name: 'User',
-        color: '#5bc0de',
         points: this.history.map(p => [p.ts, p.cpu_user])
       }, <LineSeries>{
         name: 'IRQ',
-        color: '#5cb85c',
         points: this.history.map(p => [p.ts, p.cpu_irq])
-      }];
+      }
+    ]);
   } 
 
   toPercentage(value: number) {
